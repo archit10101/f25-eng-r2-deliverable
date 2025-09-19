@@ -79,6 +79,7 @@ export default function AddSpeciesDialog({ userId }: { userId: string }) {
 
   // Control open/closed state of the dialog
   const [open, setOpen] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   // Instantiate form functionality with React Hook Form, passing in the Zod schema (for validation) and default values
   const form = useForm<FormData>({
@@ -129,6 +130,49 @@ export default function AddSpeciesDialog({ userId }: { userId: string }) {
     });
   };
 
+    // --- Wikipedia API search ---
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) return;
+
+    try {
+      const encodedTerm = encodeURIComponent(searchTerm.trim());
+      const response = await fetch(
+        `https://en.wikipedia.org/w/api.php?origin=*&action=query&prop=extracts|pageimages&exintro&explaintext&piprop=original&format=json&titles=${encodedTerm}`
+      );
+      const data = await response.json();
+
+      const pages = data?.query?.pages;
+      const pageId = Object.keys(pages)[0];
+      if (pageId === "-1") {
+        toast({
+          title: "No Wikipedia article found",
+          description: `Could not find a Wikipedia article for "${searchTerm}".`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const page = pages[pageId];
+      const description = page.extract ?? null;
+      const image = page.original?.source ?? null;
+
+      form.setValue("description", description);
+      form.setValue("image", image);
+
+      toast({
+        title: "Autofill complete",
+        description: "Description and image have been autofilled from Wikipedia.",
+      });
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: "Error fetching Wikipedia article",
+        description: "There was a problem fetching data from Wikipedia. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -144,6 +188,17 @@ export default function AddSpeciesDialog({ userId }: { userId: string }) {
             Add a new species here. Click &quot;Add Species&quot; below when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
+
+                {/* --- Wikipedia search field --- */}
+        <div className="mb-4 flex gap-2">
+          <Input
+            placeholder="Search Wikipedia for species..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <Button onClick={() => void handleSearch()}>Search</Button>
+        </div>
+
         <Form {...form}>
           <form onSubmit={(e: BaseSyntheticEvent) => void form.handleSubmit(onSubmit)(e)}>
             <div className="grid w-full items-center gap-4">

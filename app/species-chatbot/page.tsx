@@ -16,21 +16,44 @@ export default function SpeciesChatbot() {
     }
   };
 
-const handleSubmit = async () => {
-  // TODO: Implement this function
-}
+  const handleSubmit = async () => {
+    const trimmed = message.trim();
+    if (!trimmed) return; // ignore empty sends
+
+    // Add user's message to chat log
+    setChatLog((prev) => [...prev, { role: "user", content: trimmed }]);
+    setMessage(""); // clear input
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: trimmed }),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || "Failed to get response from server.");
+      }
+
+      const data: { response: string } = await res.json();
+
+      setChatLog((prev) => [...prev, { role: "bot", content: data.response }]);
+    } catch (err) {
+      console.error(err);
+      setChatLog((prev) => [
+        ...prev,
+        { role: "bot", content: "Sorry, something went wrong. Please try again." },
+      ]);
+    }
+  };
+
 
 return (
     <>
       <TypographyH2>Species Chatbot</TypographyH2>
       <div className="mt-4 flex gap-4">
         <div className="mt-4 rounded-lg bg-foreground p-4 text-background">
-          <TypographyP>
-            The Species Chatbot is a feature to be implemented that is specialized to answer questions about animals.
-            Ideally, it will be able to provide information on various species, including their habitat, diet,
-            conservation status, and other relevant details. Any unrelated prompts will return a message to the user
-            indicating that the chatbot is specialized for species-related queries only.
-          </TypographyP>
           <TypographyP>
             To use the Species Chatbot, simply type your question in the input field below and hit enter. The chatbot
             will respond with the best available information.
