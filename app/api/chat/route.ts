@@ -3,9 +3,10 @@ import { generateResponse } from "@/lib/services/species-chat";
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    // 👇 Explicit type assertion
+    const body = (await req.json()) as { message?: string };
 
-    if (!body || typeof body.message !== "string" || !body.message.trim()) {
+    if (!body.message || typeof body.message !== "string" || !body.message.trim()) {
       return NextResponse.json({ error: "Invalid or missing message." }, { status: 400 });
     }
 
