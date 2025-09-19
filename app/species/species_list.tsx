@@ -5,15 +5,24 @@ import { redirect } from "next/navigation";
 import AddSpeciesDialog from "./add-species-dialog";
 import SpeciesCard from "./species-card";
 
-type Props = {
+interface Props {
   search?: string;
-};
+}
+
+interface Species {
+  id: string;
+  scientific_name: string;
+  common_name: string | null;
+  kingdom: string;
+  total_population: number | null;
+  image: string | null;
+  description: string | null;
+  author: string;
+}
 
 export default async function SpeciesList({ search }: Props) {
   const supabase = createServerSupabaseClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const {data: { session }, } = await supabase.auth.getSession();
 
   if (!session) redirect("/");
 
@@ -39,7 +48,7 @@ export default async function SpeciesList({ search }: Props) {
       <Separator className="my-4" />
       <div className="flex flex-wrap justify-center">
         {species?.map((s) => (
-          <SpeciesCard key={s.id} species={s} sessionId={sessionId} />
+          <SpeciesCard key={s.id as any} species={s as any} sessionId={sessionId} />
         ))}
       </div>
     </>

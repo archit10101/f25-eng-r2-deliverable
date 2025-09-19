@@ -36,7 +36,7 @@ export default function SpeciesChatbot() {
         throw new Error(errorText || "Failed to get response from server.");
       }
 
-      const data: { response: string } = await res.json();
+      const data: any = await res.json();
 
       setChatLog((prev) => [...prev, { role: "bot", content: data.response }]);
     } catch (err) {

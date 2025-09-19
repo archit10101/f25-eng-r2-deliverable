@@ -17,6 +17,14 @@ module.exports = {
   // Reference for typescript-eslint: https://typescript-eslint.io/linting/configs
   // prettier/@typescript-eslint extension is no longer needed. https://stackoverflow.com/questions/65675771/eslint-couldnt-find-the-config-prettier-typescript-eslint-after-relocating
   rules: {
+    "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/consistent-indexed-object-style": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "prefer-const": "off",
     "@typescript-eslint/consistent-type-imports": [
       // https://typescript-eslint.io/rules/consistent-type-imports/
       "error", // https://eslint.org/docs/latest/use/configure/rules

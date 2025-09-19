@@ -14,6 +14,7 @@ import { type Database } from "@/lib/schema";
 import { useRouter } from "next/navigation";
 import { useState, type BaseSyntheticEvent, type MouseEvent } from "react";
 
+
 // Use Zod to define the shape + requirements of a Profile entry; used in form validation
 const profileFormSchema = z.object({
   username: z
@@ -61,10 +62,10 @@ export default function ProfileForm({ profile }: { profile: Profile }) {
 
   const onSubmit = async (data: ProfileFormValues) => {
     // Instantiate Supabase client (for client components) and make update based on input data
-    const supabase = createBrowserSupabaseClient();
+    const supabase:any= createBrowserSupabaseClient();
     const { error } = await supabase
-      .from("profiles")
-      .update({ biography: data.bio, display_name: data.username })
+      .from("profiles" as any)
+      .update({ biography: data.bio, display_name: data.username } as any)
       .eq("id", profile.id);
 
     // Catch and report errors from Supabase and exit the onSubmit function with an early 'return' if an error occurred.

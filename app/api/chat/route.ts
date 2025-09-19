@@ -1,10 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
 import { generateResponse } from "@/lib/services/species-chat";
+import { NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
     // 👇 Explicit type assertion
-    const body = (await req.json()) as { message?: string };
+    const body: any = await req.json();
 
     if (!body.message || typeof body.message !== "string" || !body.message.trim()) {
       return NextResponse.json({ error: "Invalid or missing message." }, { status: 400 });

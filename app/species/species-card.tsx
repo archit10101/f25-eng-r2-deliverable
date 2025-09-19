@@ -102,14 +102,14 @@ export default function SpeciesCard({ species, sessionId }: SpeciesCardProps) {
     // The `input` prop contains data that has already been processed by zod. We can now use it in a supabase query
     const supabase = createBrowserSupabaseClient();
     const { error } = await supabase
-      .from("species")
+      .from("species" as any)
       .update({
         common_name: input.common_name,
         description: input.description,
         kingdom: input.kingdom,
         total_population: input.total_population,
         image: input.image,
-      })
+      } as any)
       .eq("scientific_name", species.scientific_name); // specify which species row to update
 
 

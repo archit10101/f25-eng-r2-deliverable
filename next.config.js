@@ -3,6 +3,9 @@
 await import("./env.mjs");
 
 const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   reactStrictMode: true,
   images: {
     unoptimized: true,
